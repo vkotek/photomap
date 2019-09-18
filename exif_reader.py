@@ -1,4 +1,4 @@
-from deps import exifread
+import exifread
 
 def _get_if_exist(data, key):
     if key in data:

@@ -1,6 +1,6 @@
 import boto3
-import logging
-import exif_reader
+import logging, datetime
+import exif_reader, save_to_file
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -19,8 +19,11 @@ def handler(event, context):
         key = str( file_object['s3']['object']['key'] )
         s3.download_file('vkotek-geocam', key, '/tmp/{}'.format(key))
         
-        result = exif_reader.get_gps_from_file('/tmp/{}'.format(key))
+        gps = exif_reader.get_gps_from_file('/tmp/{}'.format(key))
         
-        logger.info(result)
+        data = [key, datetime.datetime.utcnow().isoformat(), gps[0], gps[1]]
+        
+        save_to_file.save(data, s3)
+        logger.info("Updated CSV file in s3.")
 
     return "Success!?"
