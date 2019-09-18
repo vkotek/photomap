@@ -17,11 +17,16 @@ def handler(event, context):
         
         file_object = event['Records'][0]
         key = str( file_object['s3']['object']['key'] )
-        s3.download_file('vkotek-geocam', key, '/tmp/{}'.format(key))
+
+        # Get only filename for tmp location
+        key_tmp = key.split("/")[-1]
         
-        gps = exif_reader.get_gps_from_file('/tmp/{}'.format(key))
+        s3.download_file('vkotek-geocam', key, '/tmp/{}'.format(key_tmp))
+        logger.info("File downloaded to /tmp/{}".format(key_tmp))
         
-        data = [key, datetime.datetime.utcnow().isoformat(), gps[0], gps[1]]
+        gps = exif_reader.get_gps_from_file('/tmp/{}'.format(key_tmp))
+        
+        data = [key_tmp, datetime.datetime.utcnow().isoformat(), gps[0], gps[1]]
         
         save_to_file.save(data, s3)
         logger.info("Updated CSV file in s3.")
