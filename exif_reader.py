@@ -1,4 +1,4 @@
-import exifread
+from dependencies import exifread
 
 def _get_if_exist(data, key):
     if key in data:

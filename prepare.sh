@@ -1,5 +1,6 @@
 #!/bin/bash
 
-mkdir deps
-pip install -t ./deps -r requirements.txt
+mkdir dependencies
+pip install -t ./dependencies -r requirements.txt
+rm Archive.zip
 zip -r Archive *
